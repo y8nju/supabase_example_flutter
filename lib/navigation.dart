@@ -4,7 +4,8 @@ import 'package:supabase_example/screens/message_screen.dart';
 import 'package:supabase_example/screens/note_screens.dart';
 
 class Navigation extends StatefulWidget {
-  const Navigation({super.key});
+  const Navigation({super.key, this.selectedIndex});
+  final int? selectedIndex;
 
   @override
   State<Navigation> createState() => _NavigationState();
@@ -12,6 +13,13 @@ class Navigation extends StatefulWidget {
 
 class _NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.selectedIndex ?? 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +29,7 @@ class _NavigationState extends State<Navigation> {
           children: [
             NoteScreen(),
             const ChatScreen(),
-            const AccountScreen(),
+            AccountScreen(),
           ],
         ),
       ),
