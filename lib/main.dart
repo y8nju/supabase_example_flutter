@@ -48,6 +48,9 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.gothicA1TextTheme(
           Theme.of(context).textTheme,
         ),
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+        ),
       ),
       initialRoute: '/',
       routes: {

@@ -25,7 +25,6 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Message'),
-          centerTitle: true,
         ),
         body: Container());
   }

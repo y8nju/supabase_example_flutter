@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_example/main.dart';
+import 'package:supabase_example/widgets/avatar_widget.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
 
   @override
-  State<AccountScreen> createState() => _AccountScreenState();
+  _AccountScreenState createState() => _AccountScreenState();
 }
 
 class _AccountScreenState extends State<AccountScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _websiteController = TextEditingController();
+  String? _imageUrl;
 
   @override
   void initState() {
@@ -33,6 +35,25 @@ class _AccountScreenState extends State<AccountScreen> {
     setState(() {
       _usernameController.text = data['username'];
       _websiteController.text = data['website'];
+      _imageUrl = data['avatar_url'];
+    });
+  }
+
+  Future<void> _onUpload(String imageUrl) async {
+    final userId = supabase.auth.currentUser!.id;
+    await supabase.from('profiles').upsert({
+      'id': userId,
+      'avatar_url': imageUrl,
+    });
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Updated your profile image!'),
+        ),
+      );
+    }
+    setState(() {
+      _imageUrl = imageUrl;
     });
   }
 
@@ -41,11 +62,14 @@ class _AccountScreenState extends State<AccountScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Account'),
-          centerTitle: true,
         ),
         body: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            AvatarWidget(imageUrl: _imageUrl, onUpload: _onUpload),
+            const SizedBox(
+              height: 30,
+            ),
             TextFormField(
               controller: _usernameController,
               style: const TextStyle(
@@ -82,13 +106,13 @@ class _AccountScreenState extends State<AccountScreen> {
               onPressed: () async {
                 final username = _usernameController.text.trim();
                 final website = _websiteController.text.trim();
-                final user = supabase.auth.currentUser;
+                final userId = supabase.auth.currentUser!.id;
                 try {
                   await supabase.from('profiles').update({
                     'username': username,
                     'website': website,
                     'updated_at': DateTime.now().toIso8601String(),
-                  }).eq('id', user!.id);
+                  }).eq('id', userId);
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

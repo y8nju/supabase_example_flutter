@@ -41,7 +41,6 @@ class NoteScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Note'),
-        centerTitle: true,
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(
